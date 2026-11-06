@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracy Stuff | Developer Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#09090b',
+                        surface: '#121215',
+                        surfaceHover: '#18181c',
+                        borderSubtle: '#27272a',
+                        borderFocus: '#3f3f46',
+                        accentBlue: '#3b82f6',
+                        accentEmerald: '#10b981',
+                        accentAmber: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #09090b;
+            color: #f4f4f5;
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        ::selection {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+
+        /* Custom subtle scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
+        .dev-card {
+            background-color: #121215;
+            border: 1px solid #27272a;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .dev-card:hover {
+            border-color: #3f3f46;
+            background-color: #16161a;
+            transform: translateY(-1px);
+        }
+
+        .dev-card-primary {
+            background: linear-gradient(180deg, #16161c 0%, #121215 100%);
+            border: 1px solid #27272a;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+        }
+
+        .dev-card-primary:hover {
+            border-color: #3b82f6;
+        }
+
+        /* Pulse Dot Animation */
+        @keyframes pulse-emerald {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.95); }
+        }
+        .pulse-dot {
+            animation: pulse-emerald 2s infinite ease-in-out;
+        }
+
+        /* Toast animation */
+        #toast {
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-accentBlue selection:text-white">
+
+    <div>
+        <!-- Top Sticky Header -->
+        <header class="sticky top-0 z-40 border-b border-borderSubtle bg-obsidian/85 backdrop-blur-md">
+            <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+                
+                <!-- Brand / Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-8 rounded-lg bg-surface border border-borderSubtle flex items-center justify-center font-mono font-bold text-accentBlue text-sm shadow-sm">
+                        T/S
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-mono font-bold text-sm tracking-tight text-white">TRACY STUFF</h1>
+                            <span class="px-1.5 py-0.5 text-[10px] font-mono bg-borderSubtle/60 text-zinc-400 rounded border border-borderSubtle">v2.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nav & Status -->
+                <div class="flex items-center gap-4">
+                    <nav class="hidden md:flex items-center gap-6 text-xs font-mono text-zinc-400">
+                        <a href="#announcements" class="hover:text-white transition-colors">01. Notice</a>
+                        <a href="#tracy-games" class="hover:text-white transition-colors">02. Primary</a>
+                        <a href="#other-games" class="hover:text-white transition-colors">03. Arcade</a>
+                        <a href="#ai-tools" class="hover:text-white transition-colors">04. AI Models</a>
+                    </nav>
+
+                    <div class="h-4 w-px bg-borderSubtle hidden md:block"></div>
+
+                    <!-- Live System Status -->
+                    <div class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-[11px] font-mono text-emerald-400">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+                        <span>SYSTEMS READY</span>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- Main Content Wrapper -->
+        <main class="max-w-5xl mx-auto px-4 pt-8 pb-16 space-y-10">
+
+            <!-- Search Bar Command Center -->
+            <section class="relative">
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500 font-mono text-xs">
+                        <svg class="w-4 h-4 text-zinc-500 group-focus-within:text-accentBlue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="search-input" placeholder="Search games, mirrors, or AI tools..." 
+                           class="w-full pl-10 pr-20 py-3 bg-surface border border-borderSubtle rounded-xl text-sm font-sans text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-accentBlue focus:ring-1 focus:ring-accentBlue transition-all">
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <kbd class="hidden sm:inline-block px-2 py-0.5 text-[11px] font-mono text-zinc-400 bg-obsidian border border-borderSubtle rounded shadow-sm">
+                            <span class="text-[10px]">⌘</span>K or /
+                        </kbd>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 01 — ANNOUNCEMENTS SECTION -->
+            <section id="announcements" class="space-y-4">
+                <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-xs text-accentBlue font-bold">01</span>
+                        <span class="text-zinc-600 font-mono text-xs">/</span>
+                        <h2 class="font-mono font-semibold text-xs tracking-wider text-zinc-300 uppercase">ANNOUNCEMENTS & SYSTEM LOGS</h2>
+                    </div>
+                    <span class="text-[11px] font-mono text-zinc-500">LIVE FEED</span>
+                </div>
+
+                <!-- Main Announcement Banner -->
+                <div class="dev-card rounded-xl p-5 border-l-4 border-l-accentAmber relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-block w-2 h-2 rounded-full bg-accentAmber"></span>
+                            <span class="text-xs font-mono font-semibold text-accentAmber uppercase tracking-wider">Developer Notice</span>
+                        </div>
+                        <span class="text-[11px] font-mono text-zinc-500">SYSTEM_MSG</span>
+                    </div>
+                    <p class="text-sm font-sans text-zinc-200 leading-relaxed font-normal">
+                        Bro, y'all can have Tracy Games back. Stop spamming me about it every two seconds. The moment y'all bug me too much I'm not updating it again.
+                    </p>
+                </div>
+
+                <!-- Update Status Grids -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- Latest Updates -->
+                    <div class="dev-card rounded-xl p-4 space-y-3">
+                        <div class="flex items-center justify-between border-b border-borderSubtle pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-3.5 h-3.5 text-accentEmerald" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                <span class="text-xs font-mono font-semibold text-zinc-200 uppercase">Latest Updates</span>
+                            </div>
+                            <span class="px-2 py-0.5 text-[10px] font-mono bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 rounded">STABLE</span>
+                        </div>
+                        <ul class="space-y-2 text-xs font-mono text-zinc-300">
+                            <li class="flex items-center justify-between p-1.5 rounded bg-obsidian/40 border border-borderSubtle/50">
+                                <span class="flex items-center gap-2">
+                                    <span class="text-accentEmerald">┼</span> Added Classroom 6x
+                                </span>
+                                <span class="text-[10px] text-zinc-500">NEW</span>
+                            </li>
+                            <li class="flex items-center justify-between p-1.5 rounded bg-obsidian/40 border border-borderSubtle/50">
+                                <span class="flex items-center gap-2">
+                                    <span class="text-accentEmerald">┼</span> Added Unblocked Games 77
+                                </span>
+                                <span class="text-[10px] text-zinc-500">NEW</span>
+                            </li>
+                            <li class="flex items-center justify-between p-1.5 rounded bg-obsidian/40 border border-borderSubtle/50">
+                                <span class="flex items-center gap-2">
+                                    <span class="text-accentEmerald">┼</span> Added EzClasswork
+                                </span>
+                                <span class="text-[10px] text-zinc-500">NEW</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Less Important Updates -->
+                    <div class="dev-card rounded-xl p-4 space-y-3">
+                        <div class="flex items-center justify-between border-b border-borderSubtle pb-2.5">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-3.5 h-3.5 text-accentAmber" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span class="text-xs font-mono font-semibold text-zinc-200 uppercase">Minor Notice</span>
+                            </div>
+                            <span class="px-2 py-0.5 text-[10px] font-mono bg-amber-950/60 text-amber-400 border border-amber-500/30 rounded">PAUSED</span>
+                        </div>
+                        <div class="p-3 rounded bg-obsidian/40 border border-borderSubtle/50">
+                            <p class="text-xs font-sans text-zinc-400 leading-relaxed">
+                                Tracy AI has been temporarily removed for backend upgrades & model tuning.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 02 — TRACY GAMES SECTION (FEATURED PRIMARY) -->
+            <section id="tracy-games" class="space-y-4">
+                <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-xs text-accentBlue font-bold">02</span>
+                        <span class="text-zinc-600 font-mono text-xs">/</span>
+                        <h2 class="font-mono font-semibold text-xs tracking-wider text-zinc-300 uppercase">PRIMARY GAME HUB</h2>
+                    </div>
+                    <span class="text-[11px] font-mono text-accentBlue font-medium">PRIMARY HOST</span>
+                </div>
+
+                <div class="item-card dev-card-primary rounded-xl p-6 transition-all group" data-search="tracy games main server portal cloudflare">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-accentBlue"></div>
+                                <h3 class="font-mono font-bold text-lg text-white group-hover:text-accentBlue transition-colors">
+                                    Tracy Jones’ Games
+                                </h3>
+                                <span class="px-2 py-0.5 text-[10px] font-mono bg-blue-950/60 text-accentBlue border border-blue-500/30 rounded">
+                                    CLOUDFLARE TUNNEL
+                                </span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400 max-w-xl">
+                                Main portal for Tracy Games featuring updated proxies, game files, and central tools.
+                            </p>
+                            <div class="flex items-center gap-4 text-[11px] font-mono text-zinc-500">
+                                <span>PROTOCOL: HTTPS</span>
+                                <span>•</span>
+                                <span>STATUS: ACTIVE</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Controls -->
+                        <div class="flex items-center gap-3 shrink-0">
+                            <button onclick="copyToClipboard('https://friend-selected-pumps-lower.trycloudflare.com', 'Tracy Games Link')" 
+                                    class="p-2.5 rounded-lg bg-obsidian border border-borderSubtle text-zinc-400 hover:text-white hover:border-borderFocus transition-all" 
+                                    title="Copy URL">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                            </button>
+                            <a href="https://friend-selected-pumps-lower.trycloudflare.com" target="_blank" rel="noopener noreferrer" 
+                               class="px-5 py-2.5 rounded-lg bg-accentBlue hover:bg-blue-600 text-white font-mono text-xs font-semibold flex items-center gap-2 shadow-lg shadow-blue-500/10 transition-all">
+                                <span>LAUNCH SERVER</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 03 — OTHER GAMES SECTION -->
+            <section id="other-games" class="space-y-4">
+                <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-xs text-accentBlue font-bold">03</span>
+                        <span class="text-zinc-600 font-mono text-xs">/</span>
+                        <h2 class="font-mono font-semibold text-xs tracking-wider text-zinc-300 uppercase">ARCADE & MIRRORS</h2>
+                    </div>
+                    <span class="text-[11px] font-mono text-zinc-500">6 MIRRORS</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                    
+                    <!-- Ping pong -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="ping pong multiplayer github sports">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">Ping Pong</h3>
+                                <span class="text-[10px] font-mono text-zinc-500 bg-obsidian px-2 py-0.5 rounded border border-borderSubtle">GITHUB</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">Multiplayer arcade ping pong game setup.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <button onclick="copyToClipboard('https://uwuza.github.io/pingpongmultiplayer.github.io/', 'Ping Pong')" class="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                <span>Copy</span>
+                            </button>
+                            <a href="https://uwuza.github.io/pingpongmultiplayer.github.io/" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Launch</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tomb Of The Mask -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="tomb of the mask totm github labyrinth retro runner">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">Tomb Of The Mask</h3>
+                                <span class="text-[10px] font-mono text-zinc-500 bg-obsidian px-2 py-0.5 rounded border border-borderSubtle">GITHUB</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">Retro arcade maze runner port.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <button onclick="copyToClipboard('https://uwuza.github.io/totm/', 'Tomb of the Mask')" class="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                <span>Copy</span>
+                            </button>
+                            <a href="https://uwuza.github.io/totm/" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Launch</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Coolmath Games -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="coolmath games logic puzzle math">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">Coolmath Games</h3>
+                                <span class="text-[10px] font-mono text-zinc-500 bg-obsidian px-2 py-0.5 rounded border border-borderSubtle">EXTERNAL</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">Official Coolmath logic game directory.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <button onclick="copyToClipboard('https://www.coolmathgames.com/', 'Coolmath Games')" class="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                <span>Copy</span>
+                            </button>
+                            <a href="https://www.coolmathgames.com/" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Launch</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Classroom 6x -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="classroom 6x google sites mirror">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">Classroom 6x</h3>
+                                <span class="text-[10px] font-mono text-zinc-500 bg-obsidian px-2 py-0.5 rounded border border-borderSubtle">G-SITES</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">Classroom 6x game repository.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <button onclick="copyToClipboard('https://sites.google.com/view/classroom6x/home', 'Classroom 6x')" class="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                <span>Copy</span>
+                            </button>
+                            <a href="https://sites.google.com/view/classroom6x/home" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Launch</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Unblocked Games 77 -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="unblocked games 77 google sites mirror">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">Unblocked Games 77</h3>
+                                <span class="text-[10px] font-mono text-zinc-500 bg-obsidian px-2 py-0.5 rounded border border-borderSubtle">G-SITES</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">Games 77 mirror database.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <button onclick="copyToClipboard('https://sites.google.com/site/unblockedgames77/home', 'Unblocked Games 77')" class="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                <span>Copy</span>
+                            </button>
+                            <a href="https://sites.google.com/site/unblockedgames77/home" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Launch</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- EzClasswork -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="ezclasswork google sites mirror">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">EzClasswork</h3>
+                                <span class="text-[10px] font-mono text-zinc-500 bg-obsidian px-2 py-0.5 rounded border border-borderSubtle">G-SITES</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">EzClasswork quick link repository.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <button onclick="copyToClipboard('https://sites.google.com/view/ezclasswork/home', 'EzClasswork')" class="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                <span>Copy</span>
+                            </button>
+                            <a href="https://sites.google.com/view/ezclasswork/home" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Launch</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 04 — AI MODELS SECTION -->
+            <section id="ai-tools" class="space-y-4">
+                <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-xs text-accentBlue font-bold">04</span>
+                        <span class="text-zinc-600 font-mono text-xs">/</span>
+                        <h2 class="font-mono font-semibold text-xs tracking-wider text-zinc-300 uppercase">AI MODELS & ASSISTANTS</h2>
+                    </div>
+                    <span class="text-[11px] font-mono text-zinc-500">3 SERVICES</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                    
+                    <!-- Gemini -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="gemini google ai prompt assistant chat">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">Gemini</h3>
+                                <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/20">GOOGLE</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">Google multimodality AI model.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <span class="text-[11px] font-mono text-zinc-500">gemini.google.com</span>
+                            <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Open</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Copilot -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="copilot microsoft ai prompt chat">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">Copilot</h3>
+                                <span class="text-[10px] font-mono text-blue-400 bg-blue-950/40 px-2 py-0.5 rounded border border-blue-500/20">MICROSOFT</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">Microsoft Copilot web assistant.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <span class="text-[11px] font-mono text-zinc-500">copilot.microsoft.com</span>
+                            <a href="https://copilot.microsoft.com" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Open</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Claude -->
+                    <div class="item-card dev-card rounded-xl p-4 flex flex-col justify-between gap-4 group" data-search="claude anthropic ai prompt chat">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-mono font-semibold text-sm text-zinc-100 group-hover:text-accentBlue transition-colors">Claude</h3>
+                                <span class="text-[10px] font-mono text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-500/20">ANTHROPIC</span>
+                            </div>
+                            <p class="text-xs font-sans text-zinc-400">Anthropic Claude AI chat tool.</p>
+                        </div>
+                        <div class="pt-3 border-t border-borderSubtle/60 flex items-center justify-between">
+                            <span class="text-[11px] font-mono text-zinc-500">claude.ai</span>
+                            <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-accentBlue hover:underline flex items-center gap-1 font-medium">
+                                <span>Open</span>
+                                <span class="text-xs">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Search Empty State Message -->
+            <div id="empty-state" class="hidden text-center py-12 dev-card rounded-xl border border-dashed border-borderSubtle">
+                <svg class="w-8 h-8 text-zinc-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h3 class="font-mono text-sm font-semibold text-zinc-300">No items found</h3>
+                <p class="text-xs font-sans text-zinc-500 mt-1">Try searching for a different game title or provider name.</p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Sleek Minimal Footer -->
+    <footer class="border-t border-borderSubtle py-6 bg-obsidian">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-zinc-500">
+            <div>
+                <span>TRACY STUFF • DEV HUB</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span>PRESS <kbd class="px-1.5 py-0.5 text-[10px] bg-surface border border-borderSubtle rounded text-zinc-400">ESC</kbd> TO CLEAR SEARCH</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Banner -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 pointer-events-none">
+        <div class="bg-surface border border-accentEmerald text-zinc-100 px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 font-mono text-xs">
+            <svg class="w-4 h-4 text-accentEmerald" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="toast-msg">Copied link to clipboard!</span>
+        </div>
+    </div>
+
+    <!-- Core Interactive Logic -->
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const itemCards = document.querySelectorAll('.item-card');
+        const emptyState = document.getElementById('empty-state');
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toast-msg');
+        let toastTimeout;
+
+        // Instant Filter Engine
+        function filterItems() {
+            const query = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            itemCards.forEach(card => {
+                const searchData = card.getAttribute('data-search') || '';
+                const cardText = card.textContent.toLowerCase();
+
+                if (searchData.includes(query) || cardText.includes(query)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleCount === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+        }
+
+        searchInput.addEventListener('input', filterItems);
+
+        // Keyboard Shortcuts (⌘K / Ctrl+K or / to focus search, Esc to clear)
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+            } else if (e.key === '/' && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+            } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+                searchInput.value = '';
+                filterItems();
+                searchInput.blur();
+            }
+        });
+
+        // Copy to Clipboard Helper
+        function copyToClipboard(url, name) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => showToast(`Copied ${name} URL!`));
+            } else {
+                const tempInput = document.createElement('input');
+                tempInput.value = url;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast(`Copied ${name} URL!`);
+            }
+        }
+
+        // Show Toast Notification
+        function showToast(message) {
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
